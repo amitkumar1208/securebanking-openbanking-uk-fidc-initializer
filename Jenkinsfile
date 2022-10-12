@@ -9,41 +9,31 @@ podTemplate(yaml: '''
         - sleep
         args:
         - 99d
-      - name: kaniko
-        image: gcr.io/kaniko-project/executor:debug
+      - name: golang
+        image: golang:1.16.5
         command:
         - sleep
         args:
-        - 9999999
-        volumeMounts:
-        - name: kaniko-secret
-          mountPath: /kaniko/.docker
-      restartPolicy: Never
-      volumes:
-      - name: kaniko-secret
-        secret:
-            secretName: dockercred
-            items:
-            - key: .dockerconfigjson
-              path: config.json
+        - 99d
 ''') {
   node(POD_LABEL) {
     stage('Get a Maven project') {
-      git url: 'https://github.com/scriptcamp/kubernetes-kaniko.git', branch: 'main'
+      git 'https://github.com/jenkinsci/kubernetes-plugin.git'
       container('maven') {
         stage('Build a Maven project') {
-          sh '''
-          echo pwd
-          '''
+          sh 'mvn -B -ntp clean install'
         }
       }
     }
 
-    stage('Build Java Image') {
-      container('kaniko') {
+    stage('Get a Golang project') {
+      git url: 'https://github.com/hashicorp/terraform-provider-google.git', branch: 'main'
+      container('golang') {
         stage('Build a Go project') {
           sh '''
-            /kaniko/executor --context `pwd` --destination bibinwilson/hello-kaniko:1.0
+            mkdir -p /go/src/github.com/hashicorp
+            ln -s `pwd` /go/src/github.com/hashicorp/terraform
+            cd /go/src/github.com/hashicorp/terraform && make
           '''
         }
       }
