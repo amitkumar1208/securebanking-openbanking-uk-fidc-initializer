@@ -1,10 +1,20 @@
-pipeline {
-    agent { docker { image 'node:16.17.1-alpine' } }
-    stages {
-        stage('build') {
-            steps {
-                sh 'node --version'
+podTemplate(containers: [
+    containerTemplate(
+        name: 'jnlp', 
+        image: 'jenkins/inbound-agent:latest'
+        )
+  ]) {
+
+    node(POD_LABEL) {
+        stage('Get a Maven project') {
+            container('jnlp') {
+                stage('Shell Execution') {
+                    sh '''
+                    echo "Hello! I am executing shell"
+                    '''
+                }
             }
         }
+
     }
 }
