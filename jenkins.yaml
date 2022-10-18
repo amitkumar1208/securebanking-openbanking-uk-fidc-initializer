@@ -157,9 +157,9 @@ spec:
               effect: NoSchedule
       podTemplates:
           jnlp-forgerock: |
-          - name: jnlp-forgerock
-            label: tsb-forgerock
-            namespace: forgerock
+          - name: jnlp-forgerock-sbat
+            label: tsb-forgerock-sbat
+            namespace: forgerock-sbat
             serviceAccount: tsb-forgerock
             nodeSelector: taints.eks.aws.uk.tsb/role=mgmt
             imagePullSecrets:
@@ -169,7 +169,7 @@ spec:
               apiVersion: v1
               kind: Pod
               metadata:
-                # namespace: forgerock
+                # namespace: forgerock-sbat
               spec:
                 # serviceAccountName: tsb-forgerock
                 securityContext:
