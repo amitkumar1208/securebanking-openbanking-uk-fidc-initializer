@@ -124,6 +124,14 @@ spec:
                                   curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
                                   /home/jenkins/.local/bin/skaffold install --user skaffold
                                 toolHome: "/home/jenkins/.local/bin"
+                  - name: "helm"
+                    properties:
+                      - installSource:
+                          installers:
+                            - command:
+                                command: |-
+                                  curl -Lo helm https://storage.googleapis.com/kubernetes-helm/helm-v2.10.0-linux-amd64.tar.gz | tar -zxvf /home/jenkins/.local/bin/helm
+                                toolHome: "/home/jenkins/.local/bin"
       jenkinsUrl: https://jenkins.{{ DNS_ZONE }}
       slaveJenkinsUrl: http://jenkins.jenkins.svc.cluster.local:8080
       slaveJenkinsTunnel: jenkins-agent.jenkins.svc.cluster.local:50000
@@ -156,7 +164,7 @@ spec:
               value: mgmt
               effect: NoSchedule
       podTemplates:
-          jnlp-forgerock: |
+          jnlp-forgerock-sbat: |
           - name: jnlp-forgerock-sbat
             label: tsb-forgerock-sbat
             namespace: forgerock-sbat
